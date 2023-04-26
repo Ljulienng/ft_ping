@@ -14,7 +14,6 @@
 #include <netdb.h>
 #include <errno.h>
 #include <signal.h>
-#include <stdbool.h>
 #include <limits.h> // Include limits.h for LONG_MAX
 
 #define PACKET_SIZE 56
@@ -33,7 +32,7 @@ typedef struct s_ping_data
 	int packets_received;
 	const char *host;
 	char ip_str[INET_ADDRSTRLEN];
-	bool verbose;
+	int verbose;
 	struct timeval send_times[0xFFFF];
 	long rtt_min;
 	long rtt_max;
@@ -47,7 +46,7 @@ unsigned short checksum(void *b, int len);
 void handle_signal(int signal);
 void print_statistics(void);
 void send_icmp_packet(struct addrinfo *res, int seq, t_ping_data *pdata);
-void receive_icmp_packet(struct addrinfo *res, int seq, t_ping_data *pdata);
+void receive_icmp_packet(int seq, t_ping_data *pdata);
 void usage(void);
 int ft_ping(const char *target, struct addrinfo *res);
 

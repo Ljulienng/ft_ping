@@ -4,18 +4,15 @@
 int custom_getopt(int argc, char *const argv[], const char *optstring)
 {
 	static int optind = 1;
-	static int optpos = 1;
 	int optopt;
-	int opterr = 0;
 	int optlen = 0;
 	int optfound = 0;
-	char *optarg = NULL;
 
 	if (optind >= argc || argv[optind][0] != '-' || argv[optind][1] == '\0')
 	{
 		return (-1);
 	}
-	optopt = argv[optind][optpos];
+	optopt = argv[optind][1];
 	optlen = ft_strlen(optstring);
 	for (int i = 0; i < optlen; i++)
 	{
@@ -24,24 +21,26 @@ int custom_getopt(int argc, char *const argv[], const char *optstring)
 			optfound = 1;
 			if (optstring[i + 1] == ':')
 			{
-				optarg = argv[optind] + optpos + 1;
-				if (*optarg == '\0' && optind + 1 < argc)
+				if (optind + 1 < argc)
 				{
 					optarg = argv[++optind];
 				}
-				optpos = 1;
+				else
+				{
+					fprintf(stderr, "Error: option -%c requires an argument\n", optopt);
+					return -1;
+				}
 			}
 		}
 	}
 	if (optfound == 0)
 	{
-		opterr = 1;
-		optopt = '?';
+		fprintf(stderr, "Error: invalid option -%c\n", optopt);
+		return -1;
 	}
-	if (opterr == 1)
-	{
-		return (-1);
-	}
+
+	optind++;
+
 	return (optopt);
 }
 

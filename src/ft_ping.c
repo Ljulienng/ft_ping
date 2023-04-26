@@ -48,9 +48,8 @@ void send_icmp_packet(struct addrinfo *res, int seq, t_ping_data *pdata)
 	}
 }
 
-void receive_icmp_packet(struct addrinfo *res, int seq, t_ping_data *pdata)
+void receive_icmp_packet(int seq, t_ping_data *pdata)
 {
-	(void)res;
 	struct sockaddr_in r_addr;
 	socklen_t r_addr_len = sizeof(r_addr);
 	char buf[1024];
@@ -141,7 +140,7 @@ int ft_ping(const char *target, struct addrinfo *res)
 	while (1)
 	{
 		send_icmp_packet(res, pdata.packets_sent, &pdata);
-		receive_icmp_packet(res, pdata.packets_sent - 1, &pdata);
+		receive_icmp_packet(pdata.packets_sent - 1, &pdata);
 		sleep(1);
 	}
 }
@@ -149,30 +148,41 @@ int ft_ping(const char *target, struct addrinfo *res)
 int main(int argc, char **argv)
 {
 	int opt;
-	while ((opt = custom_getopt(argc, argv, "vh")) != -1)
+	const char *target = NULL;
+
+	for (optind = 1; optind < argc; optind++)
 	{
-		switch (opt)
+		if (argv[optind][0] == '-')
 		{
-		case 'v':
-			pdata.verbose = true;
+			opt = custom_getopt(argc, argv, "vh");
+			switch (opt)
+			{
+			case 'v':
+				pdata.verbose = 1;
+				break;
+			case 'h':
+				usage();
+				exit(0);
+			default:
+				usage();
+				exit(1);
+			}
+		}
+		else
+		{
+			target = argv[optind];
 			break;
-		case 'h':
-			usage();
-			exit(0);
-		default:
-			usage();
-			exit(1);
 		}
 	}
 
-	signal(SIGINT, handle_signal);
-
-	if (optind >= argc)
+	if (!target)
 	{
 		usage();
 		exit(1);
 	}
-	const char *target = argv[optind];
+
+	signal(SIGINT, handle_signal);
+
 	struct addrinfo hints, *res;
 	ft_memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;

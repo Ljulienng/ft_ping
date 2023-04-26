@@ -45,33 +45,19 @@ int custom_getopt(int argc, char *const argv[], const char *optstring)
 	return (optopt);
 }
 
-// Fonction qui calcule le checksum ICMP
-unsigned short calculate_icmp_checksum(void *buff, int length)
+unsigned short checksum(void *b, int len)
 {
-	unsigned short *buff_pointer = buff;
+	unsigned short *buf = b;
 	unsigned int sum = 0;
 	unsigned short result;
 
-	// Additionne tous les mots de 16 bits
-	while (length > 1)
-	{
-		sum += *buff_pointer++;
-		length -= 2;
-	}
-
-	// S'il reste un octet, l'ajoute avec padding de 0
-	if (length == 1)
-	{
-		sum += *(unsigned char *)buff_pointer;
-	}
-
-	// Ajoute le carry
+	for (sum = 0; len > 1; len -= 2)
+		sum += *buf++;
+	if (len == 1)
+		sum += *(unsigned char *)buf;
 	sum = (sum >> 16) + (sum & 0xFFFF);
 	sum += (sum >> 16);
-
-	// Complément à 1 du résultat
 	result = ~sum;
-
 	return result;
 }
 

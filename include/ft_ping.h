@@ -42,8 +42,8 @@ typedef struct s_ping_data
 } t_ping_data;
 
 int custom_getopt(int argc, char *const argv[], const char *optstring);
-unsigned short calculate_icmp_checksum(void *buff, int length);
 double custom_sqrt(double num);
+unsigned short checksum(void *b, int len);
 void handle_signal(int signal);
 void print_statistics(void);
 void send_icmp_packet(struct addrinfo *res, int seq, t_ping_data *pdata);

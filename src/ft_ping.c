@@ -85,7 +85,7 @@ void receive_icmp_packet(int seq, t_ping_data *pdata)
 			time_t sec_diff = tv.tv_sec - pdata->send_times[seq].tv_sec;
 			suseconds_t usec_diff = tv.tv_usec - pdata->send_times[seq].tv_usec;
 			long rtt = (sec_diff * 1000000) + usec_diff;
-			printf("64 bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms\n",
+			printf("64 bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
 				   pdata->ip_str, icmph->un.echo.sequence, buf[8],
 				   (float)rtt / 1000);
 			pdata->packets_received++;
